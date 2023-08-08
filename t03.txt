@@ -33,8 +33,16 @@
 
 1.e.
 ==========================================
+#lang racket/base
+(require racket/list)
+
+(define (split lista n) (define (take listap n) (cond [(or (empty? listap) (= n 0)) empty] [else (cons (first listap) (take (rest listap) (sub1 n)))]))(define (leave listap n) (cond [(empty? listap) empty] [(= n 0) listap] [else (leave (rest listap) (sub1 n))])) (list (take lista n) (leave lista n)))
 ==========================================
 
 1.f.
 ==========================================
+#lang racket/base
+(require racket/list)
+
+(define (pack lista) (define (create elem n) (cond [(= n 0) empty] [else (cons elem (create elem (sub1 n)))])) (define (subpack elem listap n) (cond [(empty? listap) (list (create elem n))] [(not (= elem (first listap))) (cons (create elem n) (subpack (first listap) (rest listap) 1))] [else (subpack elem (rest listap) (add1 n))])) (cond [(empty? lista) empty] [else (subpack (first lista) (rest lista) 1)]))
 ==========================================
