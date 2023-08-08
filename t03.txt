@@ -1,0 +1,40 @@
+1.a.
+==========================================
+#lang racket/base
+
+(define (sum-rank n) (cond [(= 0 n) 0] [else (+ n (sum-rank (sub1 n)))]))
+(sum-rank 4)
+==========================================
+
+1.b.
+==========================================
+#lang racket/base
+(require racket/list)
+
+(define (compress lista) (define (compressp listap listapp) (cond [(empty? listap) listapp] [(= (first listap) (first listapp)) (compressp (rest listap) listapp)] [else (compressp (rest listap) (cons (first listap) listapp))])) (cond [(empty? lista) (list)] [else (reverse (compressp (rest lista) (list (first lista))))]))
+==========================================
+
+1.c.
+==========================================
+#lang racket/base
+(require racket/list)
+
+(define (flatten lista) (define (combine listap listapp) (cond [(not (empty? listap)) (cons (first listap) (combine (rest listap) listapp))] [(not (empty? listapp)) (cons (first listapp) (combine listap (rest listapp)))] [else empty]))
+  (cond [(empty? lista) empty] [(list? (first lista)) (combine (flatten (first lista)) (rest lista))] [else (cons (first lista) (flatten (rest lista)))]))
+==========================================
+
+1.d.
+==========================================
+#lang racket/base
+(require racket/list)
+
+(define (duplicate lista) (cond [(empty? lista) empty] [else (cons (first lista) (cons (first lista) (duplicate (rest lista))))]))
+==========================================
+
+1.e.
+==========================================
+==========================================
+
+1.f.
+==========================================
+==========================================
