@@ -1,12 +1,12 @@
-#lang racket/base
-(require racket/format)
-(require racket/list)
+#lang racket
 
 (struct node (id val children) #:mutable)
 (struct tree (head) #:mutable)
 
 (define (empty-tree atree) (void? (tree-head atree)))
+(define (is-the-node anode id) (= id (node-id anode)))
 
+(define (create-node id val) (node id val (list)))
 (define (create-tree) (tree (void)))
 
 (define (list-all-nodes atree) 
@@ -14,17 +14,58 @@
     (define (cover-all children)
       (if (empty? children) " " (string-append " " (show-node (first children)) (cover-all (rest children))))
     )
-    (string-append "{" (~v (node-id anode)) " : " (~v (node-val anode)) "[" (cover-all (node-children anode)) "]}")
+    (string-append "{(" (number->string (node-id anode)) " : " (number->string (node-val anode)) ") [" (cover-all (node-children anode)) "]}")
   )
   (if (empty-tree atree) "The tree is empty."
     (show-node (tree-head atree))
   )
 )
 
+(define (find-node atree id)
+  (define (search-node anode)
+    (define (cover-all children)
+      (if (empty? children) (void) 
+        (let ([search (search-node (first children))])
+          (if (void? search) (cover-all (rest children)) search)
+        )
+      )
+    )
+    (if (is-the-node anode id) (node-val anode) (cover-all (node-children anode)))
+  )
+  (when (not (empty-tree atree))
+    (search-node (tree-head atree))
+  )
+)
+
+(define (insert-node atree parent-id id val)
+  (define (put-into-node anode)
+    (define (cover-all children)
+      (if (empty? children) #f 
+        (let ([search (put-into-node (first children))])
+          (if search #t (cover-all (rest children)))
+        )
+      )
+    )
+    (define (add-child child)
+      (let ([children (node-children anode)]) (set-node-children! anode (append children (list child))))
+      #t
+    )
+    (if (is-the-node anode parent-id) (add-child (create-node id val)) (cover-all (node-children anode)))
+  )
+  (cond
+    [(and (empty-tree atree) (void? parent-id)) (set-tree-head! atree (create-node id val))]
+    [(not (or (empty-tree atree) (void? parent-id))) (put-into-node (tree-head atree)) (void)]
+  )
+)
 
 ; tests
-(empty-tree (create-tree))
-(list-all-nodes (create-tree))
-(list-all-nodes (create-tree))
-
-(string-append "112" "221" "112" (~v 112))
+;(empty-tree (create-tree))
+;(list-all-nodes (create-tree))
+;(list-all-nodes (create-tree))
+;(string-append "112" "221" "112" (number->string 112))
+(define thetree (create-tree))
+(insert-node thetree (void) 1 23213)
+(insert-node thetree 1 2 666)
+(insert-node thetree 1 3 665)
+(insert-node thetree 3 4 48375)
+(list-all-nodes thetree)
