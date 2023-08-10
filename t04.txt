@@ -1,0 +1,30 @@
+#lang racket/base
+(require racket/format)
+(require racket/list)
+
+(struct node (id val children) #:mutable)
+(struct tree (head) #:mutable)
+
+(define (empty-tree atree) (void? (tree-head atree)))
+
+(define (create-tree) (tree (void)))
+
+(define (list-all-nodes atree) 
+  (define (show-node anode)
+    (define (cover-all children)
+      (if (empty? children) " " (string-append " " (show-node (first children)) (cover-all (rest children))))
+    )
+    (string-append "{" (~v (node-id anode)) " : " (~v (node-val anode)) "[" (cover-all (node-children anode)) "]}")
+  )
+  (if (empty-tree atree) "The tree is empty."
+    (show-node (tree-head atree))
+  )
+)
+
+
+; tests
+(empty-tree (create-tree))
+(list-all-nodes (create-tree))
+(list-all-nodes (create-tree))
+
+(string-append "112" "221" "112" (~v 112))
