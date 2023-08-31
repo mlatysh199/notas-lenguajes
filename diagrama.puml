@@ -1,0 +1,82 @@
+@startuml Tarea-8
+
+enum Category {
+    Food
+    Clothing
+    Utilities
+}
+
+hide Category methods
+
+class Product {
+    - id : UUID
+    - name : String
+    - price : float
+    - quantityStock : int
+    - offer : float
+    - type : Category
+    + toString() : String
+}
+
+Product *-- Category
+
+class HashMap<Product, int>
+
+hide HashMap members
+
+HashMap ..> Product
+
+interface Leng {
+    + displayList() : String
+    + toString() : String
+    + getLanguage() : String
+}
+
+class LengShoppingList extends HashMap implements Leng {
+    'bloque static aquí
+    - {static} allowedProducts : ArrayList<Product>
+    + {static} getAllowedProducts() : ArrayList<Product>
+    + empty() : boolean
+    + countProducts() : int
+    + totalPurchased() : float
+    + buyProduct(product : Product, amount : int)
+    + displayList() : String
+    + toString() : String
+}
+
+LengShoppingList o-- Product
+
+abstract class Identification {
+    - data : String
+    + getData() : String
+    + setData(data : String)
+    + {abstract} setData(data : long)
+    + {abstract} getExplicit() : long
+    + toString() : String
+}
+
+class DimexIdentification extends Identification {
+    + setData(data : long)
+    + getExplicit() : long
+}
+
+class LengIdentification extends Identification implements Leng {
+    + setData(data : long)
+    + getExplicit() : long
+    + toString() : String
+}
+
+class LengClient implements Leng {
+    - id : Identification
+    - name : String
+    - lastname : String
+    - address : String
+    - currentShoppingList : LengShoppingList
+    + toString() : String
+    + getLanguage() : String
+}
+
+LengClient *-- Identification
+LengClient *-- LengShoppingList
+
+@enduml
